@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2C3E50"
+    android:padding="10dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Event Title"
+                    android:id="@+id/tvEventdetailsTitle"
+                    android:textColor="#ECF0F1"
+                    android:textSize="15sp"
+                    android:background="#ffe74c3c"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="10dp"
+                    android:textStyle="bold|italic" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_bg_bottom_shadow"
+                    android:paddingBottom="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:id="@+id/LinearLayout123">
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Day: "
+                            android:id="@+id/textView23"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="May 4, 2015"
+                            android:id="@+id/tvEventdetailsDate"
+                            android:textSize="13sp"
+                            android:layout_alignBottom="@+id/textView23"
+                            android:layout_toRightOf="@+id/textView23"
+                            android:layout_toEndOf="@+id/textView23"
+                            android:textColor="#333333" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Time: "
+                            android:id="@+id/textView37"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="7:40 PM"
+                            android:id="@+id/tvEventdetailsTime"
+                            android:textSize="13sp"
+                            android:layout_alignBottom="@+id/textView37"
+                            android:layout_toRightOf="@+id/textView37"
+                            android:layout_toEndOf="@+id/textView37"
+                            android:textColor="#333333" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Duration: "
+                            android:id="@+id/textView35"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="1 hour"
+                            android:id="@+id/tvEventdetailsDuration"
+                            android:textSize="13sp"
+                            android:layout_alignBottom="@+id/textView35"
+                            android:layout_toRightOf="@+id/textView35"
+                            android:layout_toEndOf="@+id/textView35"
+                            android:textColor="#333333" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Location: "
+                            android:id="@+id/textView36"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Somewhere"
+                            android:id="@+id/tvEventdetailsLocation"
+                            android:textSize="13sp"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/textView36"
+                            android:layout_toEndOf="@+id/textView36"
+                            android:textColor="#333333" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Lorem ipsum dolor sit amet,  ullamco laboris nisi ut aliquip ex ea commodo consequat. s"
+                        android:id="@+id/tvEventdetailsBody"
+                        android:textSize="13sp"
+                        android:textColor="#333333"
+                        android:elegantTextHeight="false"
+                        android:lineSpacingMultiplier="1.2"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+                <!-- Comments Fragment-->
+                <fragment
+                    android:name="amr.frost.com.eventschedulingsystemfory_telecom.CommentsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

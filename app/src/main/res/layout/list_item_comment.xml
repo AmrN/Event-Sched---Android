@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:paddingTop="20dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="author name"
+                    android:id="@+id/tvAuthorName"
+                    android:textColor="#2980B9"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="May 1, 2015  2:34 Pm"
+                    android:id="@+id/tvDate"
+                    android:layout_marginRight="54dp"
+                    android:layout_marginEnd="54dp"
+                    android:textSize="10sp"
+                    android:textColor="#333333"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textIsSelectable="true" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo, et."
+                android:id="@+id/tvCommentBody"
+                android:textSize="15sp"
+                android:textColor="#333333"
+                android:paddingRight="30dp" />
+            <!--<View style="@style/Divider"-->
+                <!--android:layout_marginTop="20dp"></View>-->
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
