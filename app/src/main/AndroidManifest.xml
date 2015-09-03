@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="amr.frost.com.eventschedulingsystemfory_telecom" >
+    package="com.csgroup.eventsched" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -33,7 +33,7 @@
             android:parentActivityName=".HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="amr.frost.com.eventschedulingsystemfory_telecom.HomeActivity" />
+                android:value=".HomeActivity" />
         </activity>
 
         <service

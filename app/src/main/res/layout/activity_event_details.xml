@@ -176,7 +176,7 @@
 
                 <!-- Comments Fragment-->
                 <fragment
-                    android:name="amr.frost.com.eventschedulingsystemfory_telecom.CommentsFragment"
+                    android:name="com.csgroup.eventsched.CommentsFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
