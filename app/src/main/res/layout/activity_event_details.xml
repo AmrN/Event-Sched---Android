@@ -178,7 +178,8 @@
                 <fragment
                     android:name="com.csgroup.eventsched.CommentsFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comments_fragment"/>
 
 
 

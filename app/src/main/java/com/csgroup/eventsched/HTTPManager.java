@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class HTTPManager {
 
     // VirtualBox > File > Properties > Network > VirtualBox Host-Only Network Adapter > Modify > Here you will see the IP address to use
-    private final String BASE_URL = "http://192.168.183.1/eventsched/v1/";
+    private final String BASE_URL = "http://192.168.56.1/eventsched/v1/";
     private final String METHOD_POST = "POST";
     private final String METHOD_GET = "GET";
 
