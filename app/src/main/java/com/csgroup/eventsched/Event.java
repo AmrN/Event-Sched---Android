@@ -27,7 +27,8 @@ public class Event implements Parcelable {
     private DateManager mDateManager;
 
 
-    public Event(int id, int owner_id, String title, String details, String location, long start_timestamp, int duration) {
+    public Event(int id, int owner_id, String title, String details,
+                 String location, long start_timestamp, int duration) {
         this.id = id;
         this.owner_id = owner_id;
         this.title = title;
