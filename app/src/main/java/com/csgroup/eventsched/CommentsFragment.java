@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CommentsFragment extends Fragment {
+public class CommentsFragment extends Fragment implements TaskProvider {
 
     private ListView commentsListView;
     private SimpleAdapter adapter;
@@ -33,6 +33,9 @@ public class CommentsFragment extends Fragment {
     private EventDetailsActivity mActivity;
 
     private List<Comment> commentsList;
+    private List<Comment> oldCommentsList = new ArrayList<>();
+
+    private PeriodicAsyncTask<GetCommentsTask> periodicCommentsRefresh;
 
     public CommentsFragment() {
         // Required empty public constructor
@@ -48,9 +51,28 @@ public class CommentsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        GetCommentsTask getCommentsTask = new GetCommentsTask();
-        getCommentsTask.execute();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (periodicCommentsRefresh == null) {
+            periodicCommentsRefresh =
+                    new PeriodicAsyncTask<>(this);
+        }
+        periodicCommentsRefresh.start(5000);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        periodicCommentsRefresh.stop();
+    }
+
+    @Override
+    public AsyncTask<Void, ?, ?> getTask(int num) {
+        return new GetCommentsTask();
     }
 
     @Override
@@ -59,16 +81,6 @@ public class CommentsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_comments, container, false);
         commentsListView = (ListView) rootView.findViewById(R.id.listview_comments);
 
-        // because the listview is inside a scrollview we need to add this
-//        commentsListView.setOnTouchListener(new View.OnTouchListener() {
-//            // Setting on Touch Listener for handling the touch inside ScrollView
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // Disallow the touch request for parent scroll on touch of child view
-//                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                return false;
-//            }
-//        });
 
         btnCommentSend = (Button) rootView.findViewById(R.id.btnCommentSend);
         btnCommentSend.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +93,7 @@ public class CommentsFragment extends Fragment {
                     return;
                 }
                 AddCommentTask addCommentTask = new AddCommentTask();
-                addCommentTask.execute(new String[] {commentBody});
+                addCommentTask.execute(new String[]{commentBody});
             }
         });
         etCommentbody = (EditText) rootView.findViewById(R.id.etCommentBody);
@@ -91,28 +103,34 @@ public class CommentsFragment extends Fragment {
     }
 
     private void updateComments() {
-        List<HashMap<String, String>> listValues = new ArrayList<>();
-        for (Comment comment : commentsList) {
-            HashMap<String, String> commentHashMap = new HashMap<>();
-            commentHashMap.put("author_name", comment.getAuthorName());
-            commentHashMap.put("created_at", comment.getDateTimeString());
-            commentHashMap.put("content", comment.getContent());
 
-            listValues.add(commentHashMap);
+        if (commentsList.size() != oldCommentsList.size()) {
+            List<HashMap<String, String>> listValues = new ArrayList<>();
+            for (Comment comment : commentsList) {
+                HashMap<String, String> commentHashMap = new HashMap<>();
+                commentHashMap.put("author_name", comment.getAuthorName());
+                commentHashMap.put("created_at", comment.getDateTimeString());
+                commentHashMap.put("content", comment.getContent());
+
+                listValues.add(commentHashMap);
+            }
+
+            String[] from = new String[]{
+                    "author_name", "created_at", "content"
+            };
+            int[] to = new int[]{
+                    R.id.tvAuthorName, R.id.tvDate, R.id.tvCommentBody
+            };
+
+            adapter = new SimpleAdapter(getActivity(), listValues,
+                    R.layout.list_item_comment, from, to);
+
+            commentsListView.setAdapter(adapter);
+            setListViewHeightBasedOnChildren(commentsListView);
+
+            oldCommentsList.clear();
+            oldCommentsList.addAll(commentsList);
         }
-
-        String [] from = new String[] {
-                "author_name", "created_at", "content"
-        };
-        int [] to = new int[] {
-                R.id.tvAuthorName, R.id.tvDate, R.id.tvCommentBody
-        };
-
-        adapter = new SimpleAdapter(getActivity(), listValues,
-                R.layout.list_item_comment, from, to);
-
-        commentsListView.setAdapter(adapter);
-        setListViewHeightBasedOnChildren(commentsListView);
     }
 
     /**** Method for Setting the Height of the ListView dynamically.
@@ -146,6 +164,10 @@ public class CommentsFragment extends Fragment {
 
         private final String LOG_TAG = GetCommentsTask.class.getSimpleName();
         private final String ROUTE = "comments";
+
+        // constructor to solve instantiation problem in PeriodicAsyncTask
+        public GetCommentsTask() {}
+
         @Override
         protected String doInBackground(Void... params) {
             HTTPManager httpManager = new HTTPManager();
@@ -160,7 +182,6 @@ public class CommentsFragment extends Fragment {
 
             String jsonResponse = httpManager.get(ROUTE, header, queryParamsMap);
             Log.v(LOG_TAG, "GetComments jsonResponse: " + jsonResponse);
-
             return jsonResponse;
         }
 
@@ -176,7 +197,7 @@ public class CommentsFragment extends Fragment {
                     }
 
                 } catch (JsonParser.JsonParserException e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }
