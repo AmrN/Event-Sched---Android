@@ -23,6 +23,9 @@ import java.util.List;
 
 
 public class AddEventActivity extends MenuActivity {
+
+    public String timeFromStr, timeToStr, dateFromStr, dateToStr;
+
     private Button btnFilterOptions, btnCreate, btnCancel;
     private EditText etEventTitle, etEventLocation, etEventDetails,
             etDurationHours, etDurationMinutes;
@@ -134,9 +137,9 @@ public class AddEventActivity extends MenuActivity {
         final Long[] timeStamps = {1272509157L, 1273509157L };
         DateManager dm = new DateManager(timeStamps[0]);
         ArrayList<String> arraySpinner = new ArrayList<>();
-        arraySpinner.add(dm.getREadableDayDateTimeString());
+        arraySpinner.add(dm.getReadableDayDateTimeString());
         dm.setTimeStamp(timeStamps[1]);
-        arraySpinner.add(dm.getREadableDayDateTimeString());
+        arraySpinner.add(dm.getReadableDayDateTimeString());
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, arraySpinner);

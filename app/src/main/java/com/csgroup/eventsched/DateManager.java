@@ -2,6 +2,7 @@ package com.csgroup.eventsched;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -41,6 +42,26 @@ public class DateManager {
         return dateFormat.format(this.mCalendar.getTimeInMillis());
     }
 
+    public void setDate(int year, int month, int day) {
+        mCalendar.set(year, month, day);
+    }
+
+    public String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(this.mCalendar.getTimeInMillis());
+    }
+
+    public String getTime() {
+        DateFormat dateFormat = new SimpleDateFormat("HH-mm-ss");
+        return dateFormat.format(this.mCalendar.getTimeInMillis());
+    }
+
+    public void setTime(int hour, int minute, int second) {
+        mCalendar.set(Calendar.HOUR_OF_DAY, hour);
+        mCalendar.set(Calendar.MINUTE, minute);
+        mCalendar.set(Calendar.SECOND, second);
+    }
+
     public String getReadableTimeString() {
         DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         return dateFormat.format(this.mCalendar.getTimeInMillis());
@@ -51,7 +72,7 @@ public class DateManager {
         return dateFormat.format(this.mCalendar.getTimeInMillis());
     }
 
-    public String getREadableDayDateTimeString() {
+    public String getReadableDayDateTimeString() {
         DateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd, hh:mm a");
         return dateFormat.format(this.mCalendar.getTimeInMillis());
     }
