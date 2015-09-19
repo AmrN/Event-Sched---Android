@@ -22,6 +22,7 @@ public class JsonParser {
     private static final String API_MEMBERS_ARRAY = "members";
     private static final String API_COMMENTS_ARRAY = "comments";
     private static final String API_COMMENT = "comment";
+    private static final String API_FREE_TIMES_ARRAY = "free_times";
 
     public static class JsonParserException extends Exception {
         public JsonParserException(String detailMessage) {
@@ -193,6 +194,29 @@ public class JsonParser {
         }
     }
 
+    public static List<FreeTime> parseFreeTimes( String jsonStr) throws JsonParserException {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            checkError(jsonObject);
+
+            JSONArray freeTimesJsonArray = jsonObject.getJSONArray(API_FREE_TIMES_ARRAY);
+
+            List<FreeTime> freeTimesList = new ArrayList<>();
+            for (int i = 0; i < freeTimesJsonArray.length(); i++) {
+                JSONObject freeTimeJson = freeTimesJsonArray.getJSONObject(i);
+
+                FreeTime freeTime = helperParseFreeTime(freeTimeJson);
+                freeTimesList.add(freeTime);
+            }
+            return freeTimesList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
     private static Comment helperParseComment(JSONObject commentJson) throws JSONException {
         int id = commentJson.getInt(Comment.API_ID);
         int eventId = commentJson.getInt(Comment.API_EVENT_ID);
@@ -203,6 +227,15 @@ public class JsonParser {
 
         return new Comment(id, authorId, eventId, content,
                 authorName, createdAtTimestamp);
+    }
+
+    private static FreeTime helperParseFreeTime(JSONObject freeTimeJson) throws JSONException {
+
+        long startTimeStamp = freeTimeJson.getLong(FreeTime.API_START_TIMESTAMP);
+        int timesFit = freeTimeJson.getInt(FreeTime.API_TIMES_FIT);
+
+        return new FreeTime(timesFit, startTimeStamp);
+
     }
 
     private static Event helperParseEvent(JSONObject eventJson) throws JSONException{

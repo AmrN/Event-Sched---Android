@@ -52,7 +52,7 @@ public class DateManager {
     }
 
     public String getTime() {
-        DateFormat dateFormat = new SimpleDateFormat("HH-mm-ss");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         return dateFormat.format(this.mCalendar.getTimeInMillis());
     }
 

@@ -17,7 +17,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +31,7 @@ public class AddEventActivity extends MenuActivity {
 
     public String timeFromStr, timeToStr, dateFromStr, dateToStr;
 
-    private Button btnFilterOptions, btnCreate, btnCancel;
+    private Button btnFilterOptions, btnCreate, btnCancel, btnRefreshSuggestions;
     private EditText etEventTitle, etEventLocation, etEventDetails,
             etDurationHours, etDurationMinutes;
     private ViewGroup containerMembers;
@@ -34,10 +39,12 @@ public class AddEventActivity extends MenuActivity {
     private List<Member> mMembers;
 
     private List<Member> mSelectedMembers;
-    private Long mSelectedTimeStamp = null;
+//    private Long mSelectedTimeStamp = null;
     private Long mSelectedUnixTimeStamp;
     private String eventTitle, eventLocation, eventDetails;
     private int durationHours, durationMinutes, durationTotalMinutes;
+
+    private List<Long> freeTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,7 @@ public class AddEventActivity extends MenuActivity {
 
         btnCreate = (Button) findViewById(R.id.btnEventCreate);
         btnCancel = (Button) findViewById(R.id.btnEventCancel);
+        btnRefreshSuggestions = (Button) findViewById(R.id.btnRefreshSuggestions);
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +81,13 @@ public class AddEventActivity extends MenuActivity {
             }
         });
 
+        btnRefreshSuggestions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshSuggestions();
+            }
+        });
+
         etEventTitle = (EditText) findViewById(R.id.etEventTitle);
         etEventLocation = (EditText) findViewById(R.id.etEventLocation);
         etEventDetails = (EditText) findViewById(R.id.etEventDetails);
@@ -81,7 +96,7 @@ public class AddEventActivity extends MenuActivity {
 
         spinTime = (Spinner) findViewById(R.id.spinTime);
         // TODO Remove this
-        this.tempFillSpinner();
+//        this.tempFillSpinner();
 
         containerMembers = (ViewGroup) findViewById(R.id.containerMembers);
         containerMembers.setVisibility(View.GONE);
@@ -89,6 +104,62 @@ public class AddEventActivity extends MenuActivity {
         mSelectedMembers = new ArrayList<>();
         GetPrivilegesTask getPrivilegesTask = new GetPrivilegesTask();
         getPrivilegesTask.execute();
+    }
+
+    public void refreshSuggestions() {
+        GregorianCalendar cal = new GregorianCalendar();
+        long currentTimeMillis = System.currentTimeMillis();
+        cal.setTimeInMillis(currentTimeMillis);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date dateFrom, dateTo;
+        if (dateFromStr != null && !dateFromStr.isEmpty()) {
+            try {
+                dateFrom = formatter.parse(dateFromStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            dateFrom = cal.getTime();
+            dateFromStr = formatter.format(dateFrom);
+        }
+
+        if (dateToStr != null && !dateToStr.isEmpty()) {
+            try {
+                dateTo = formatter.parse(dateToStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            cal.add(Calendar.DAY_OF_MONTH, 7);
+            dateTo = cal.getTime();
+            dateToStr = formatter.format(dateTo);
+        }
+
+        if (timeFromStr == null || timeFromStr.isEmpty()) {
+            timeFromStr = "00:00:00";
+        }
+
+        if (timeToStr == null || timeToStr.isEmpty()) {
+            timeToStr = "23:59:00";
+        }
+
+
+
+        calcDuration();
+        if (durationTotalMinutes <= 0) {
+            Toast.makeText(this, "Please Choose a suitable duration", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        RefreshTimesTask refreshTimesTask = new RefreshTimesTask();
+        refreshTimesTask.execute();
+
     }
 
     private boolean validateFields() {
@@ -110,6 +181,24 @@ public class AddEventActivity extends MenuActivity {
             return false;
         }
 
+        calcDuration();
+
+        if (durationTotalMinutes <= 0) {
+            Toast.makeText(this, "Please Choose a suitable duration", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (mSelectedUnixTimeStamp == null) {
+            Toast.makeText(this, "Please Choose a suitable Time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // TODO fix this after dynamic fill
+//        mSelectedUnixTimeStamp = mSelectedTimeStamp;
+        return true;
+    }
+
+    private void calcDuration() {
         String durationHoursStr = etDurationHours.getText().toString();
         durationHours = durationHoursStr.isEmpty() ? 0 : Integer.parseInt(durationHoursStr);
 
@@ -117,29 +206,26 @@ public class AddEventActivity extends MenuActivity {
         durationMinutes = durationMinutesStr.isEmpty() ? 0 : Integer.parseInt(durationMinutesStr);
 
         durationTotalMinutes = durationMinutes + durationHours * 60;
-
-        if (durationTotalMinutes <= 0) {
-            Toast.makeText(this, "Please Choose a suitable duration", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (mSelectedTimeStamp == null) {
-            Toast.makeText(this, "Please Choose a suitable Time", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // TODO fix this after dynamic fill
-        mSelectedUnixTimeStamp = mSelectedTimeStamp;
-        return true;
     }
 
-    private void tempFillSpinner() {
-        final Long[] timeStamps = {1272509157L, 1273509157L };
-        DateManager dm = new DateManager(timeStamps[0]);
+    private void fillFreeTimesSpinner(List<FreeTime> freeTimesList) {
+//        this.freeTimes = freeTimesList;
+        this.freeTimes = new ArrayList<>();
+        DateManager dateManager = new DateManager();
+
         ArrayList<String> arraySpinner = new ArrayList<>();
-        arraySpinner.add(dm.getReadableDayDateTimeString());
-        dm.setTimeStamp(timeStamps[1]);
-        arraySpinner.add(dm.getReadableDayDateTimeString());
+        for (FreeTime freeTime : freeTimesList) {
+//            arraySpinner.add(freeTime.getTimeString());
+//            if (arraySpinner.size() > 15) {
+//                break;
+//            }
+            for (int i = 0; i < freeTime.getRepetitionsCount() && i < 4; i++) {
+                Long timestamp = freeTime.getStartTimeStamp() + i * durationTotalMinutes * 60;
+                this.freeTimes.add(timestamp);
+                dateManager.setTimeStamp(timestamp);
+                arraySpinner.add(dateManager.getReadableDayDateTimeString());
+            }
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, arraySpinner);
@@ -147,7 +233,10 @@ public class AddEventActivity extends MenuActivity {
         spinTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AddEventActivity.this.mSelectedTimeStamp = timeStamps[position];
+                DateManager dateManager = new DateManager();
+
+                AddEventActivity.this.mSelectedUnixTimeStamp =
+                        AddEventActivity.this.freeTimes.get(position);
             }
 
             @Override
@@ -155,6 +244,9 @@ public class AddEventActivity extends MenuActivity {
 
             }
         });
+
+
+
     }
 
     private void displayMembersList() {
@@ -171,27 +263,7 @@ public class AddEventActivity extends MenuActivity {
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_add_event, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+
 
     private class MembersAdapter extends ArrayAdapter<Member> {
         private ArrayList<MemberHolder> mMembersList;
@@ -253,6 +325,65 @@ public class AddEventActivity extends MenuActivity {
             cbMember.setChecked(memberHolder.isChecked);
 
             return convertView;
+        }
+    }
+
+    private class RefreshTimesTask extends AsyncTask<Void, Void, String> {
+        private final String LOG_TAG = RefreshTimesTask.class.getSimpleName();
+        private final String ROUTE = "freetimes";
+
+        private final String QUERY_MEMBERS = "members";
+        private final String QUERY_DATE_START = "date_start";
+        private final String QUERY_DATE_END = "date_end";
+        private final String QUERY_TIME_START = "time_start";
+        private final String QUERY_TIME_END = "time_end";
+        private final String QUERY_DURATION = "duration";
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            HTTPManager httpManager = new HTTPManager();
+            HashMap<String, String> header = new HashMap<>();
+            header.put("Authorization",
+                    new PreferencesManager(AddEventActivity.this, null)
+                            .getApiKey());
+
+            String membersStr = constructMembersString();
+            HashMap<String, String> queryParams = new HashMap<>();
+            if (!membersStr.isEmpty()) {
+                queryParams.put(QUERY_MEMBERS, membersStr);
+            }
+            queryParams.put(QUERY_DATE_START, dateFromStr);
+            queryParams.put(QUERY_DATE_END, dateToStr);
+            queryParams.put(QUERY_TIME_START, timeFromStr);
+            queryParams.put(QUERY_TIME_END, timeToStr);
+            queryParams.put(QUERY_DURATION, Integer.toString(durationTotalMinutes));
+//            if (!membersStr.isEmpty()) {
+//                queryParams.put(PAYLOAD_MEMBERS, membersStr);
+//            }
+
+            String jsonResponse = httpManager.get(ROUTE, header, queryParams);
+            Log.v(LOG_TAG, "RefreshTimes jsonResponse: " + jsonResponse);
+
+            return jsonResponse;
+        }
+
+        @Override
+        protected void onPostExecute(String jsonResponse) {
+            if (jsonResponse != null) {
+                try {
+                    List<FreeTime> freeTimesList = JsonParser.parseFreeTimes(jsonResponse);
+                    if (freeTimesList != null) {
+                        fillFreeTimesSpinner(freeTimesList);
+                        Toast.makeText(AddEventActivity.this,
+                                "Suggested times refreshed", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JsonParser.JsonParserException e) {
+                    Toast.makeText(AddEventActivity.this, e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
@@ -351,21 +482,22 @@ public class AddEventActivity extends MenuActivity {
             }
         }
 
-        private String constructMembersString() {
-            StringBuffer buffer = new StringBuffer();
-            boolean first = true;
-            for (Member member : mSelectedMembers) {
-                if (first) {
-                    first = false;
-                }
-                else {
-                    buffer.append(',');
-                }
+    }
 
-                buffer.append(member.getId());
+    private String constructMembersString() {
+        StringBuffer buffer = new StringBuffer();
+        boolean first = true;
+        for (Member member : mSelectedMembers) {
+            if (first) {
+                first = false;
             }
-            return buffer.toString();
+            else {
+                buffer.append(',');
+            }
 
+            buffer.append(member.getId());
         }
+        return buffer.toString();
+
     }
 }

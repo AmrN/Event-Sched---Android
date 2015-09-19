@@ -119,10 +119,9 @@
                     android:text="Time"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
                     <Spinner
                         android:id="@+id/spinTime"
@@ -135,9 +134,20 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
                         android:text="Filter Options" />
+                    <Button
+                        android:id="@+id/btnRefreshSuggestions"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
 
-                </LinearLayout>
+                        android:layout_below="@id/btnFilterOptions"
+                        android:layout_alignLeft="@id/btnFilterOptions"
+                        android:text="Refresh"/>
+
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout

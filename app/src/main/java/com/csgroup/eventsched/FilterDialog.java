@@ -99,7 +99,7 @@ public class FilterDialog extends Dialog
                 dpFrom.show();
                 break;
             case R.id.btnDateTo:
-                DatePickerDialog dpTo = new DatePickerDialog(mActivity, new DateFromListener(),
+                DatePickerDialog dpTo = new DatePickerDialog(mActivity, new DateToListener(),
                         cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
                 dpTo.show();
                 break;
@@ -108,6 +108,8 @@ public class FilterDialog extends Dialog
                 mActivity.timeToStr = this.timeToStr;
                 mActivity.dateFromStr = this.dateFromStr;
                 mActivity.dateToStr = this.dateToStr;
+
+                dismiss();
         }
     }
 
@@ -142,7 +144,7 @@ public class FilterDialog extends Dialog
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             DateManager dateManager = new DateManager();
             dateManager.setDate(year, monthOfYear, dayOfMonth);
-            dateFromStr = dateManager.getTime();
+            dateFromStr = dateManager.getDate();
             tvDateFrom.setText(dateFromStr);
         }
     }
@@ -152,7 +154,7 @@ public class FilterDialog extends Dialog
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             DateManager dateManager = new DateManager();
             dateManager.setDate(year, monthOfYear, dayOfMonth);
-            dateToStr = dateManager.getTime();
+            dateToStr = dateManager.getDate();
             tvDateTo.setText(dateToStr);
         }
     }
