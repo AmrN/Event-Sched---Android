@@ -44,15 +44,14 @@ public class FilterDialog extends Dialog
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_filter);
 
-        cbLimitDaysOfWeek = (CheckBox) findViewById(R.id.cbLimitDaysOfWeek);
+
         cbLimitTimeOfDay = (CheckBox) findViewById(R.id.cbLimitTimeOfDay);
         cbLimitDate = (CheckBox) findViewById(R.id.cbLimitDate);
 
-        cbLimitDaysOfWeek.setOnCheckedChangeListener(this);
+
         cbLimitTimeOfDay.setOnCheckedChangeListener(this);
         cbLimitDate.setOnCheckedChangeListener(this);
 
-        vgLimitDaysOfWeek = (ViewGroup) findViewById(R.id.containerDaysOfWeek);
         vgLimitTimeOfDay = (ViewGroup) findViewById(R.id.containerTimeOfDay);
         vgLimitDate = (ViewGroup) findViewById(R.id.containerLimitDate);
 
@@ -167,9 +166,6 @@ public class FilterDialog extends Dialog
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         ViewGroup vg = null;
         switch (buttonView.getId()) {
-            case R.id.cbLimitDaysOfWeek:
-                vg = vgLimitDaysOfWeek;
-                break;
             case R.id.cbLimitTimeOfDay:
                 vg = vgLimitTimeOfDay;
                 break;
